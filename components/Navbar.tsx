@@ -57,12 +57,6 @@ export default function Navbar() {
     { href: "/about", label: "About", icon: Info },
   ];
 
-  const userMenuItems = [
-    { href: "/profile", label: "Profile", icon: User },
-    { href: "/settings", label: "Settings", icon: Settings },
-    { href: "/logout", label: "Logout", icon: LogOut },
-  ];
-
   return (
     <nav
       className={`fixed w-full top-0 left-0 z-50 transition-all duration-300 ${
@@ -87,20 +81,8 @@ export default function Navbar() {
           {/* Desktop Menu */}
           <div className="hidden lg:flex items-center space-x-1">
             {links.map((link) => (
-              <div key={link.href} className="relative" ref={dropdownRef}>
-                {link.dropdown ? (
-                  <div 
-                    className="flex items-center px-3 py-2 text-gray-700 hover:text-blue-600 cursor-pointer transition font-medium"
-                    onClick={() => setActiveDropdown(activeDropdown === link.href ? null : link.href)}
-                  >
-                    <link.icon size={18} className="mr-1" />
-                    {link.label}
-                    <ChevronDown 
-                      size={16} 
-                      className={`ml-1 transition-transform ${activeDropdown === link.href ? 'rotate-180' : ''}`} 
-                    />
-                  </div>
-                ) : (
+              <div key={link.href} className="relative group" ref={dropdownRef}>
+                <div className="flex items-center">
                   <Link 
                     href={link.href}
                     className="flex items-center px-3 py-2 text-gray-700 hover:text-blue-600 transition font-medium"
@@ -108,7 +90,19 @@ export default function Navbar() {
                     <link.icon size={18} className="mr-1" />
                     {link.label}
                   </Link>
-                )}
+                  
+                  {link.dropdown && (
+                    <button
+                      className="p-1 text-gray-500 hover:text-blue-600 transition"
+                      onClick={() => setActiveDropdown(activeDropdown === link.href ? null : link.href)}
+                    >
+                      <ChevronDown 
+                        size={16} 
+                        className={`transition-transform ${activeDropdown === link.href ? 'rotate-180' : ''}`} 
+                      />
+                    </button>
+                  )}
+                </div>
                 
                 {/* Dropdown Menu */}
                 {link.dropdown && activeDropdown === link.href && (
@@ -162,24 +156,41 @@ export default function Navbar() {
           <div className="space-y-2">
             {links.map((link) => (
               <div key={link.href}>
-                <Link 
-                  href={link.href}
-                  className="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition font-medium"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <link.icon size={18} className="mr-3" />
-                  {link.label}
-                </Link>
+                <div className="flex items-center justify-between">
+                  <Link 
+                    href={link.href}
+                    className="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition font-medium flex-1"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <link.icon size={18} className="mr-3" />
+                    {link.label}
+                  </Link>
+                  
+                  {link.dropdown && (
+                    <button
+                      className="p-2 text-gray-500 hover:text-blue-600 transition"
+                      onClick={() => setActiveDropdown(activeDropdown === link.href ? null : link.href)}
+                    >
+                      <ChevronDown 
+                        size={16} 
+                        className={`transition-transform ${activeDropdown === link.href ? 'rotate-180' : ''}`} 
+                      />
+                    </button>
+                  )}
+                </div>
                 
                 {/* Mobile Dropdown Items */}
-                {link.dropdown && (
-                  <div className="ml-8 mt-1 space-y-1">
+                {link.dropdown && activeDropdown === link.href && (
+                  <div className="ml-8 mt-1 space-y-1 bg-gray-50 rounded-lg p-2">
                     {link.dropdown.map((item) => (
                       <Link
                         key={item.href}
                         href={item.href}
-                        className="block px-4 py-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition text-sm"
-                        onClick={() => setIsOpen(false)}
+                        className="block px-4 py-2 text-gray-600 hover:bg-blue-100 hover:text-blue-600 rounded-lg transition text-sm"
+                        onClick={() => {
+                          setIsOpen(false);
+                          setActiveDropdown(null);
+                        }}
                       >
                         {item.label}
                       </Link>
